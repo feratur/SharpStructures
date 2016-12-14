@@ -7,9 +7,25 @@ namespace SharpStructures
 {
     public class MemoryBuffer : IList<byte>
     {
-        public byte[] Array { get; private set; } = new byte[4];
+        private const int DefaultBufferSize = 4;
+
+        private const int MaxBufferSize = 1073741824;
+
+        public byte[] Array { get; private set; }
 
         public int Position { get; private set; }
+
+        public MemoryBuffer() : this(DefaultBufferSize)
+        {
+        }
+
+        public MemoryBuffer(int size)
+        {
+            if (size < 0 || size > MaxBufferSize)
+                throw new ArgumentOutOfRangeException(nameof(size));
+
+            Array = new byte[GetPowerOfTwoLength(size)];
+        }
 
         public void SetPosition(int value)
         {
@@ -21,7 +37,7 @@ namespace SharpStructures
 
         public void AllocateSpace(int requiredSpace)
         {
-            if (requiredSpace < 0 || Position + requiredSpace > 1073741824)
+            if (requiredSpace < 0 || Position + requiredSpace > MaxBufferSize)
                 throw new ArgumentOutOfRangeException(nameof(requiredSpace));
 
             if (Array.Length < Position + requiredSpace)
