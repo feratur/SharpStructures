@@ -2,14 +2,14 @@
   "title": "SharpStructures",
   "version": "0.1.0",
 
-  "dependencies": {
-    "NETStandard.Library": "1.6.1"
-  },
-
   "frameworks": {
     "netstandard1.6": {
-      "imports": "dnxcore50"
-    }
+      "imports": "dnxcore50",
+      "dependencies": {
+        "NETStandard.Library": "1.6.1"
+      }
+    },
+    "net4.5.1": {}
   },
 
   "scripts": {

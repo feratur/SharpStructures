@@ -13,6 +13,14 @@ namespace SharpStructures
 
         public int Offset { get; private set; }
 
+        public ArrayReader(byte[] array) : this(array, BitConverter.IsLittleEndian)
+        {
+        }
+
+        public ArrayReader(byte[] array, int length) : this(array, length, BitConverter.IsLittleEndian)
+        {
+        }
+
         public ArrayReader(byte[] array, bool readAsLittleEndian)
         {
             if (array == null)
@@ -119,7 +127,7 @@ namespace SharpStructures
 
             Offset += byteCount;
 
-            return unchecked((short)result);
+            return unchecked((short) result);
         }
 
         public int ReadInt32(bool asLittleEndian)
@@ -149,7 +157,7 @@ namespace SharpStructures
             var result = 0L;
 
             for (var i = 0; i < byteCount; ++i)
-                result |= (long)Array[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
+                result |= (long) Array[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
 
             Offset += byteCount;
 

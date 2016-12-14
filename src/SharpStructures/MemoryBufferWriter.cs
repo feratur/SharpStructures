@@ -43,7 +43,7 @@ namespace SharpStructures
             if (buffer.Length - offset < count)
                 throw new ArgumentException();
 
-            Buffer.PreallocateSpace(count);
+            Buffer.AllocateSpace(count);
 
             System.Buffer.BlockCopy(buffer, offset, Buffer.Array, Buffer.Position - count, count);
         }
@@ -78,7 +78,7 @@ namespace SharpStructures
 
         public void Write(byte value)
         {
-            Buffer.PreallocateSpace(1);
+            Buffer.AllocateSpace(1);
 
             Buffer.Array[Buffer.Position - 1] = value;
         }
@@ -87,33 +87,33 @@ namespace SharpStructures
         {
             const int byteCount = sizeof(short);
 
-            Buffer.PreallocateSpace(byteCount);
+            Buffer.AllocateSpace(byteCount);
 
             for (var i = 0; i < byteCount; ++i)
                 Buffer.Array[Buffer.Position - (asLittleEndian ? byteCount - i : i + 1)] =
-                    unchecked((byte)(value >> (8 * i)));
+                    unchecked((byte) (value >> (i << 3)));
         }
 
         public void Write(int value, bool asLittleEndian)
         {
             const int byteCount = sizeof(int);
 
-            Buffer.PreallocateSpace(byteCount);
+            Buffer.AllocateSpace(byteCount);
 
             for (var i = 0; i < byteCount; ++i)
                 Buffer.Array[Buffer.Position - (asLittleEndian ? byteCount - i : i + 1)] =
-                    unchecked((byte)(value >> (8 * i)));
+                    unchecked((byte) (value >> (i << 3)));
         }
 
         public void Write(long value, bool asLittleEndian)
         {
             const int byteCount = sizeof(long);
 
-            Buffer.PreallocateSpace(byteCount);
+            Buffer.AllocateSpace(byteCount);
 
             for (var i = 0; i < byteCount; ++i)
                 Buffer.Array[Buffer.Position - (asLittleEndian ? byteCount - i : i + 1)] =
-                    unchecked((byte)(value >> (8 * i)));
+                    unchecked((byte) (value >> (i << 3)));
         }
     }
 }

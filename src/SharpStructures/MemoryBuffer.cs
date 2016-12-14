@@ -19,7 +19,7 @@ namespace SharpStructures
             Position = value;
         }
 
-        public void PreallocateSpace(int requiredSpace)
+        public void AllocateSpace(int requiredSpace)
         {
             if (requiredSpace < 0 || Position + requiredSpace > 1073741824)
                 throw new ArgumentOutOfRangeException(nameof(requiredSpace));
@@ -48,7 +48,7 @@ namespace SharpStructures
 
         public void Add(byte item)
         {
-            PreallocateSpace(1);
+            AllocateSpace(1);
 
             Array[Position - 1] = item;
         }
@@ -94,7 +94,7 @@ namespace SharpStructures
             if (index < 0 || index > Position)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            PreallocateSpace(1);
+            AllocateSpace(1);
 
             if (index < Position - 1)
                 Buffer.BlockCopy(Array, index, Array, index + 1, Position - 1 - index);
