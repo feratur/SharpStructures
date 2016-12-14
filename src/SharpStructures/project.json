@@ -9,7 +9,7 @@
         "NETStandard.Library": "1.6.1"
       }
     },
-    "net4.5.1": {}
+    "net450": {}
   },
 
   "scripts": {
