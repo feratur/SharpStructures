@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SharpStructures
 {
@@ -71,7 +70,7 @@ namespace SharpStructures
 
         public void Clear() => Position = 0;
 
-        public bool Contains(byte item) => Array.Contains(item);
+        public bool Contains(byte item) => IndexOf(item) >= 0;
 
         public void CopyTo(byte[] array, int arrayIndex)
         {
