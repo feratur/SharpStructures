@@ -6,7 +6,7 @@ namespace SharpStructures
 {
     public class MemoryBuffer : IList<byte>
     {
-        private const int DefaultBufferSize = 4;
+        private const int MinBufferSize = 4;
 
         private const int MaxBufferSize = 1073741824;
 
@@ -14,7 +14,7 @@ namespace SharpStructures
 
         public int Position { get; private set; }
 
-        public MemoryBuffer() : this(DefaultBufferSize)
+        public MemoryBuffer() : this(MinBufferSize)
         {
         }
 
@@ -23,7 +23,7 @@ namespace SharpStructures
             if (size < 0 || size > MaxBufferSize)
                 throw new ArgumentOutOfRangeException(nameof(size));
 
-            Array = new byte[GetPowerOfTwoLength(size)];
+            Array = new byte[GetPowerOfTwoLength(MinBufferSize, size)];
         }
 
         public void SetPosition(int value)
@@ -41,7 +41,7 @@ namespace SharpStructures
 
             if (Array.Length < Position + requiredSpace)
             {
-                var newArray = new byte[GetPowerOfTwoLength(Position + requiredSpace)];
+                var newArray = new byte[GetPowerOfTwoLength(Array.Length, Position + requiredSpace)];
 
                 Buffer.BlockCopy(Array, 0, newArray, 0, Position);
 
@@ -148,11 +148,11 @@ namespace SharpStructures
 
         #endregion
 
-        private int GetPowerOfTwoLength(int minLength)
+        private static int GetPowerOfTwoLength(int currentLength, int requiredLength)
         {
-            var length = Array.Length;
+            var length = currentLength;
 
-            while (length < minLength)
+            while (length < requiredLength)
                 length <<= 1;
 
             return length;

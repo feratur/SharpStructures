@@ -1,6 +1,6 @@
 {
   "title": "SharpStructures",
-  "version": "0.1.0",
+  "version": "0.1.1",
 
   "frameworks": {
     "netstandard1.6": {
