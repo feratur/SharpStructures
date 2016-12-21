@@ -1,7 +1,6 @@
 {
   "title": "SharpStructures",
-  "version": "0.2.0",
-
+  "version": "0.2.1",
   "frameworks": {
     "netstandard1.6": {
       "imports": "dnxcore50",
@@ -11,10 +10,12 @@
     },
     "net450": {}
   },
-
   "scripts": {
     "postcompile": [
       "dotnet pack --no-build --configuration %compile:Configuration%"
     ]
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }
