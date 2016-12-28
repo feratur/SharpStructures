@@ -7,7 +7,7 @@ namespace SharpStructures
     /// <summary>
     /// Byte vector structure with an access to the underlying buffer.
     /// </summary>
-    public class MemoryBuffer : IList<byte>
+    public class MemoryBuffer : IList<byte>, IReadOnlyList<byte>
     {
         private const int MinBufferSize = 4;
 

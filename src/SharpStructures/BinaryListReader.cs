@@ -1,22 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SharpStructures
 {
     /// <summary>
-    /// Reads a byte array like a binary stream.
+    /// Reads a list of bytes in a binary stream manner.
     /// </summary>
-    public class ArrayReader
+    public class BinaryListReader
     {
         /// <summary>
-        /// Underlying byte array to read from.
+        /// Underlying byte collection to read from.
         /// </summary>
-        public byte[] Array { get; }
-
-        /// <summary>
-        /// Max stream length.
-        /// </summary>
-        public int Length { get; }
+        public IReadOnlyList<byte> ByteList { get; }
 
         /// <summary>
         /// true if reading is performed in little-endian format by default; otherwise, false.
@@ -31,54 +27,22 @@ namespace SharpStructures
         /// <summary>
         /// Initializes a new instance of the <see cref="T:SharpStructures.ArrayReader" /> class.
         /// </summary>
-        /// <param name="array">Underlying byte array to read from.</param>
-        public ArrayReader(byte[] array) : this(array, BitConverter.IsLittleEndian)
+        /// <param name="list">Underlying byte collection to read from.</param>
+        public BinaryListReader(IReadOnlyList<byte> list) : this(list, BitConverter.IsLittleEndian)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:SharpStructures.ArrayReader" /> class.
         /// </summary>
-        /// <param name="array">Underlying byte array to read from.</param>
-        /// <param name="length">Max stream length.</param>
-        public ArrayReader(byte[] array, int length) : this(array, length, BitConverter.IsLittleEndian)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:SharpStructures.ArrayReader" /> class.
-        /// </summary>
-        /// <param name="array">Underlying byte array to read from.</param>
+        /// <param name="list">Underlying byte collection to read from.</param>
         /// <param name="readAsLittleEndian">true to read in little-endian format by default; otherwise, false.</param>
-        public ArrayReader(byte[] array, bool readAsLittleEndian)
+        public BinaryListReader(IReadOnlyList<byte> list, bool readAsLittleEndian)
         {
-            if (array == null)
-                throw new ArgumentNullException(nameof(array));
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
 
-            Array = array;
-
-            Length = array.Length;
-
-            ReadAsLittleEndian = readAsLittleEndian;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:SharpStructures.ArrayReader" /> class.
-        /// </summary>
-        /// <param name="array">Underlying byte array to read from.</param>
-        /// <param name="length">Max stream length.</param>
-        /// <param name="readAsLittleEndian">true to read in little-endian format by default; otherwise, false.</param>
-        public ArrayReader(byte[] array, int length, bool readAsLittleEndian)
-        {
-            if (array == null)
-                throw new ArgumentNullException(nameof(array));
-
-            if (length < 0 || length > array.Length)
-                throw new ArgumentOutOfRangeException(nameof(length));
-
-            Array = array;
-
-            Length = length;
+            ByteList = list;
 
             ReadAsLittleEndian = readAsLittleEndian;
         }
@@ -89,7 +53,7 @@ namespace SharpStructures
         /// <param name="value">New stream position.</param>
         public void SetPosition(int value)
         {
-            if (value < 0 || value > Length)
+            if (value < 0 || value > ByteList.Count)
                 throw new ArgumentOutOfRangeException(nameof(value));
 
             Offset = value;
@@ -190,10 +154,10 @@ namespace SharpStructures
         /// <returns>The next byte read from the current stream.</returns>
         public byte ReadByte()
         {
-            if (Offset + 1 > Length)
+            if (Offset + 1 > ByteList.Count)
                 throw new EndOfStreamException();
 
-            var result = Array[Offset];
+            var result = ByteList[Offset];
 
             ++Offset;
 
@@ -210,12 +174,13 @@ namespace SharpStructures
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            if (Offset + count > Length)
+            if (Offset + count > ByteList.Count)
                 throw new EndOfStreamException();
 
             var result = new byte[count];
 
-            Buffer.BlockCopy(Array, Offset, result, 0, count);
+            for (var i = 0; i < count; ++i)
+                result[i] = ByteList[Offset + i];
 
             Offset += count;
 
@@ -231,13 +196,13 @@ namespace SharpStructures
         {
             const int byteCount = sizeof(short);
 
-            if (Offset + byteCount > Length)
+            if (Offset + byteCount > ByteList.Count)
                 throw new EndOfStreamException();
 
             var result = 0;
 
             for (var i = 0; i < byteCount; ++i)
-                result |= Array[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
+                result |= ByteList[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
 
             Offset += byteCount;
 
@@ -253,13 +218,13 @@ namespace SharpStructures
         {
             const int byteCount = sizeof(int);
 
-            if (Offset + byteCount > Length)
+            if (Offset + byteCount > ByteList.Count)
                 throw new EndOfStreamException();
 
             var result = 0;
 
             for (var i = 0; i < byteCount; ++i)
-                result |= Array[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
+                result |= ByteList[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
 
             Offset += byteCount;
 
@@ -275,13 +240,13 @@ namespace SharpStructures
         {
             const int byteCount = sizeof(long);
 
-            if (Offset + byteCount > Length)
+            if (Offset + byteCount > ByteList.Count)
                 throw new EndOfStreamException();
 
             var result = 0L;
 
             for (var i = 0; i < byteCount; ++i)
-                result |= (long) Array[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
+                result |= (long) ByteList[Offset + (asLittleEndian ? i : byteCount - 1 - i)] << (i << 3);
 
             Offset += byteCount;
 
