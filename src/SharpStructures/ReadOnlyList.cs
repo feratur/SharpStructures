@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace SharpStructures
 {
     /// <summary>
-    /// Am implementation of the <see cref="T:System.Collections.Generic.IReadOnlyList`1" /> interface.
+    /// An implementation of the <see cref="T:System.Collections.Generic.IReadOnlyList`1" /> interface.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class ReadOnlyList<T> : IReadOnlyList<T>
